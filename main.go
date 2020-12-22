@@ -16,13 +16,13 @@ import (
 func main() {
 	a := app.New()
 	w := a.NewWindow("iconic drive")
-	w.SetFixedSize(true)
-	w.Resize(fyne.NewSize(300, 1))
+	//w.SetFixedSize(true)
+	w.Resize(fyne.NewSize(350, 500))
 
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
 	iconPath.Validator = func(s string) error {
-		buf, _ := ioutil.ReadFile(s)
+		buf, _ := ioutil.ReadFile(s) //remember to actually test error
 		if filetype.IsImage(buf) {
 			return nil
 		}
@@ -34,9 +34,21 @@ func main() {
 		container.NewHScroll(iconPath), clearButton,
 	)
 
+	driveSelect := widget.NewSelect(nil, nil)
+	driveSelect.PlaceHolder = "select target drive"
+	refreshButton := widget.NewButton("refresh", nil)
+	driveWrapper := fyne.NewContainerWithLayout(
+		layout.NewBorderLayout(nil, nil, nil, refreshButton),
+		driveSelect, refreshButton,
+	)
+
+	header := fyne.NewContainerWithLayout(layout.NewVBoxLayout(),
+		pathWrapper,
+		driveWrapper)
+
 	preview := canvas.NewImageFromFile("error.svg")
 	preview.FillMode = canvas.ImageFillContain
-	preview.SetMinSize(fyne.NewSize(256, 256))
+	preview.SetMinSize(fyne.NewSize(64, 64))
 
 	applyButton := widget.NewButton("apply", nil)
 	applyButton.Disable()
@@ -53,11 +65,10 @@ func main() {
 		preview.Refresh()
 	}
 
-	c := fyne.NewContainerWithLayout(layout.NewVBoxLayout(),
-		pathWrapper,
-		widget.NewSeparator(),
+	c := fyne.NewContainerWithLayout(
+		layout.NewBorderLayout(header, applyButton, nil, nil),
+		header,
 		preview,
-		widget.NewSeparator(),
 		applyButton,
 	)
 	w.SetContent(c)
