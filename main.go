@@ -37,14 +37,23 @@ func main() {
 		container.NewHScroll(iconPath), clearButton,
 	)
 
-	driveNameList, driveList := drives()
+	driveList, driveMap := drives()
+	selectedDrive := "" //nil makes an error, this is bandaid solve
 
-	driveSelect := widget.NewSelect(driveNameList, func(s string) { println(s, driveList) })
+	applyButton := widget.NewButton("apply", nil)
+	applyButton.Disable()
+
+	driveSelect := widget.NewSelect(driveList, func(s string) {
+		println(s + " <-> " + driveMap[s])
+		selectedDrive = s
+		setApplyStatus(applyButton, iconPath, &selectedDrive, &driveList)
+	})
+
 	driveSelect.PlaceHolder = "select target drive"
 	refreshButton := widget.NewButton("refresh",
 		func() {
-			driveNameList, driveList = drives()
-			driveSelect.Options = driveNameList
+			driveList, driveMap = drives()
+			driveSelect.Options = driveList
 			driveSelect.Refresh()
 		})
 	driveWrapper := fyne.NewContainerWithLayout(
@@ -60,19 +69,14 @@ func main() {
 	preview.FillMode = canvas.ImageFillContain
 	preview.SetMinSize(fyne.NewSize(64, 64))
 
-	applyButton := widget.NewButton("apply", nil)
-	applyButton.Disable()
-
 	iconPath.OnChanged = func(s string) {
 		if iconPath.Validate() != nil {
 			//https://www.iconfinder.com/icons/381599/error_icon
 			s = "error.svg"
-			applyButton.Disable()
-		} else {
-			applyButton.Enable()
 		}
 		preview.File = s
 		preview.Refresh()
+		setApplyStatus(applyButton, iconPath, &selectedDrive, &driveList)
 	}
 
 	c := fyne.NewContainerWithLayout(
@@ -84,15 +88,34 @@ func main() {
 	w.SetContent(c)
 
 	w.ShowAndRun()
-
 }
 
-func drives() ([]string, []string) {
-	//returns human readable name for each drive, then the path
+//returns human readable name for each drive, then the path in a map
+func drives() ([]string, map[string]string) {
 	driveList, _ := usbdrivedetector.Detect() //shouldnt toss this error
-	driveNameList := make([]string, len(driveList))
+	driveMap := make(map[string]string)
 	for i, drive := range driveList {
-		driveNameList[i] = filepath.Base(drive)
+		driveMap[filepath.Base(drive)] = driveList[i]
+		driveList[i] = filepath.Base(drive)
 	}
-	return driveNameList, driveList
+	return driveList, driveMap
+}
+
+/*enables or disables apply button based on status of selected drive, image
+this is some poor code, ill fix it if it causes issues*/
+func setApplyStatus(
+	applyButton *widget.Button,
+	iconPath *widget.Entry,
+	selectedDrive *string,
+	driveList *[]string) {
+
+	if (*iconPath).Validate() == nil {
+		for _, element := range *driveList { //test that device is still mounted
+			if element == *selectedDrive {
+				(*applyButton).Enable()
+				return
+			}
+		}
+	}
+	(*applyButton).Disable()
 }
