@@ -4,21 +4,23 @@ import (
 	"errors"
 	"io/ioutil"
 
+	"path/filepath"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
+	usbdrivedetector "github.com/deepakjois/gousbdrivedetector"
 	"github.com/h2non/filetype"
-	"github.com/shirou/gopsutil/disk"
 )
 
 func main() {
 	a := app.New()
 	w := a.NewWindow("iconic drive")
 	//w.SetFixedSize(true)
-	w.Resize(fyne.NewSize(350, 500))
+	w.Resize(fyne.NewSize(1, 500))
 
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
@@ -35,9 +37,16 @@ func main() {
 		container.NewHScroll(iconPath), clearButton,
 	)
 
-	driveSelect := widget.NewSelect(nil, nil)
+	driveNameList, driveList := drives()
+
+	driveSelect := widget.NewSelect(driveNameList, func(s string) { println(s, driveList) })
 	driveSelect.PlaceHolder = "select target drive"
-	refreshButton := widget.NewButton("refresh", nil)
+	refreshButton := widget.NewButton("refresh",
+		func() {
+			driveNameList, driveList = drives()
+			driveSelect.Options = driveNameList
+			driveSelect.Refresh()
+		})
 	driveWrapper := fyne.NewContainerWithLayout(
 		layout.NewBorderLayout(nil, nil, nil, refreshButton),
 		driveSelect, refreshButton,
@@ -74,25 +83,16 @@ func main() {
 	)
 	w.SetContent(c)
 
-	_, _ = getDisks()
-
 	w.ShowAndRun()
 
 }
 
-func getDisks() ([]disk.PartitionStat, []string) {
-	driveSlice := make([]disk.PartitionStat, 0)
-	driveNameSlice := make([]string, 0)
-
-	partitions, _ := disk.Partitions(false)
-	for _, partition := range partitions {
-		driveSlice = append(driveSlice, partition)
-		driveNameSlice = append(driveNameSlice, partition.Device+" - "+partition.Mountpoint)
+func drives() ([]string, []string) {
+	//returns human readable name for each drive, then the path
+	driveList, _ := usbdrivedetector.Detect() //shouldnt toss this error
+	driveNameList := make([]string, len(driveList))
+	for i, drive := range driveList {
+		driveNameList[i] = filepath.Base(drive)
 	}
-
-	for _, drive := range driveNameSlice {
-		println(drive)
-	}
-
-	return driveSlice, driveNameSlice
+	return driveNameList, driveList
 }
