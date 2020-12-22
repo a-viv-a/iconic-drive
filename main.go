@@ -1,7 +1,8 @@
 package main
 
 import (
-	"os"
+	"errors"
+	"io/ioutil"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
@@ -9,37 +10,56 @@ import (
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
+	"github.com/h2non/filetype"
 )
 
 func main() {
 	a := app.New()
 	w := a.NewWindow("iconic drive")
 	w.SetFixedSize(true)
-	w.Resize(fyne.NewSize(300, 500))
+	w.Resize(fyne.NewSize(300, 1))
 
 	iconPath := widget.NewEntry()
-	iconPath.SetPlaceHolder("paste or type icon's path")
+	iconPath.SetPlaceHolder("paste or type image path")
 	iconPath.Validator = func(s string) error {
-		_, err := os.Stat(s)
-		print(err)
-		return err
+		buf, _ := ioutil.ReadFile(s)
+		if filetype.IsImage(buf) {
+			return nil
+		}
+		return errors.New("bad") //this is so bad it hurts but ill fix it later
 	}
 	clearButton := widget.NewButton("clear", func() { iconPath.SetText("") })
-	pathWrapper := fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, nil, nil, clearButton), container.NewHScroll(iconPath), clearButton)
+	pathWrapper := fyne.NewContainerWithLayout(
+		layout.NewBorderLayout(nil, nil, nil, clearButton),
+		container.NewHScroll(iconPath), clearButton,
+	)
 
-	preview := canvas.NewImageFromFile("/home/isaacr/Documents/go shit/bareblue/Icon.png")
+	preview := canvas.NewImageFromFile("error.svg")
 	preview.FillMode = canvas.ImageFillContain
-	preview.SetMinSize(fyne.NewSize(160, 160))
+	preview.SetMinSize(fyne.NewSize(256, 256))
+
+	applyButton := widget.NewButton("apply", nil)
+	applyButton.Disable()
 
 	iconPath.OnChanged = func(s string) {
-		//println(s)
-		if !os.IsNotExist(iconPath.Validate()) {
-			preview.File = s
-			preview.Refresh()
+		if iconPath.Validate() != nil {
+			//https://www.iconfinder.com/icons/381599/error_icon
+			s = "error.svg"
+			applyButton.Disable()
+		} else {
+			applyButton.Enable()
 		}
+		preview.File = s
+		preview.Refresh()
 	}
 
-	c := fyne.NewContainerWithLayout(layout.NewVBoxLayout(), pathWrapper, preview)
+	c := fyne.NewContainerWithLayout(layout.NewVBoxLayout(),
+		pathWrapper,
+		widget.NewSeparator(),
+		preview,
+		widget.NewSeparator(),
+		applyButton,
+	)
 	w.SetContent(c)
 
 	w.ShowAndRun()
