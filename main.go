@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
 	"github.com/h2non/filetype"
+	"github.com/shirou/gopsutil/disk"
 )
 
 func main() {
@@ -73,6 +74,25 @@ func main() {
 	)
 	w.SetContent(c)
 
+	_, _ = getDisks()
+
 	w.ShowAndRun()
 
+}
+
+func getDisks() ([]disk.PartitionStat, []string) {
+	driveSlice := make([]disk.PartitionStat, 0)
+	driveNameSlice := make([]string, 0)
+
+	partitions, _ := disk.Partitions(false)
+	for _, partition := range partitions {
+		driveSlice = append(driveSlice, partition)
+		driveNameSlice = append(driveNameSlice, partition.Device+" - "+partition.Mountpoint)
+	}
+
+	for _, drive := range driveNameSlice {
+		println(drive)
+	}
+
+	return driveSlice, driveNameSlice
 }
