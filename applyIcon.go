@@ -1,7 +1,7 @@
 package main
 
 import (
-	"image/png"
+	"image"
 	"os"
 
 	ico "github.com/biessek/golang-ico"
@@ -11,19 +11,27 @@ import (
 func applyIcon(iconPath string, drivePath string) {
 	println("writeing\n" + iconPath + "\nto\n" + drivePath)
 
-	icon, err := os.Open(iconPath)
-	if err != nil {
-		println(err)
-	}
+	//these errors need to be caught eventually
+	//this block writes the windows icon and autorun file
 
-	image, _ := png.Decode(icon)
+	icon, _ := os.Open(iconPath)
 
-	target, _ := os.Create(drivePath + "/test.ico")
+	image, _, _ := image.Decode(icon)
 
-	_ = ico.Encode(target, image)
+	target, _ := os.Create(drivePath + "/autorun.ico")
 
+	_ = ico.Encode(target, image) //write the autorun.ico image
+
+	autorun, _ := os.Create(drivePath + "/autorun.inf") //make the autorun.inf
+
+	autorun.WriteString("[Autorun]\nIcon=autorun.ico")
+
+	//not sure if i need to do this
 	icon.Close()
 	target.Close()
+	autorun.Close()
+
+	//figure out how to use fatattr to hide these files on any system
 }
 
 /*
