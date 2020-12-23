@@ -1,19 +1,12 @@
 package main
 
 import (
-	"errors"
-	"io/ioutil"
-
-	"path/filepath"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
-	usbdrivedetector "github.com/deepakjois/gousbdrivedetector"
-	"github.com/h2non/filetype"
 )
 
 func main() {
@@ -24,13 +17,7 @@ func main() {
 
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
-	iconPath.Validator = func(s string) error {
-		buf, _ := ioutil.ReadFile(s) //remember to actually test error
-		if filetype.IsImage(buf) {
-			return nil
-		}
-		return errors.New("bad") //this is so bad it hurts but ill fix it later
-	}
+	iconPath.Validator = testImgPath
 	clearButton := widget.NewButton("clear", func() { iconPath.SetText("") })
 	pathWrapper := fyne.NewContainerWithLayout(
 		layout.NewBorderLayout(nil, nil, nil, clearButton),
@@ -90,32 +77,13 @@ func main() {
 	w.ShowAndRun()
 }
 
-//returns human readable name for each drive, then the path in a map
-func drives() ([]string, map[string]string) {
-	driveList, _ := usbdrivedetector.Detect() //shouldnt toss this error
-	driveMap := make(map[string]string)
-	for i, drive := range driveList {
-		driveMap[filepath.Base(drive)] = driveList[i]
-		driveList[i] = filepath.Base(drive)
-	}
-	return driveList, driveMap
-}
-
-/*enables or disables apply button based on status of selected drive, image
-this is some poor code, ill fix it if it causes issues*/
-func setApplyStatus(
-	applyButton *widget.Button,
-	iconPath *widget.Entry,
-	selectedDrive *string,
-	driveList *[]string) {
-
-	if (*iconPath).Validate() == nil {
-		for _, element := range *driveList { //test that device is still mounted
-			if element == *selectedDrive {
-				(*applyButton).Enable()
-				return
-			}
-		}
-	}
-	(*applyButton).Disable()
-}
+/*
+@Isaac the standard lib has the ability to read and write png, jpg, and others
+decode the input image into an image.Image, then encode to the output format
+this package has support for ico
+https://godoc.org/github.com/biessek/golang-ico
+	Package ico
+	Golang .ico encoder & decoder
+https://play.golang.org/p/LQICDOh5qdq
+that examples can read images in ico, png, gif, and jpg format, and output the image as an ico
+*/
