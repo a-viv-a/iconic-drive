@@ -13,7 +13,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("iconic drive")
 	//w.SetFixedSize(true)
-	w.Resize(fyne.NewSize(1, 500))
+	//w.Resize(fyne.NewSize(300, 500))
 
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
@@ -27,11 +27,13 @@ func main() {
 	driveList, driveMap := drives()
 	selectedDrive := "" //nil makes an error, this is bandaid solve
 
-	applyButton := widget.NewButton("apply", nil)
+	applyButton := widget.NewButton("apply", func() {
+		applyIcon(iconPath.Text, driveMap[selectedDrive])
+	})
 	applyButton.Disable()
 
 	driveSelect := widget.NewSelect(driveList, func(s string) {
-		println(s + " <-> " + driveMap[s])
+		//println(s + " <-> " + driveMap[s])
 		selectedDrive = s
 		setApplyStatus(applyButton, iconPath, &selectedDrive, &driveList)
 	})
@@ -54,7 +56,7 @@ func main() {
 
 	preview := canvas.NewImageFromFile("error.svg")
 	preview.FillMode = canvas.ImageFillContain
-	preview.SetMinSize(fyne.NewSize(64, 64))
+	preview.SetMinSize(fyne.NewSize(300, 300))
 
 	iconPath.OnChanged = func(s string) {
 		if iconPath.Validate() != nil {
@@ -66,24 +68,13 @@ func main() {
 		setApplyStatus(applyButton, iconPath, &selectedDrive, &driveList)
 	}
 
-	c := fyne.NewContainerWithLayout(
-		layout.NewBorderLayout(header, applyButton, nil, nil),
-		header,
-		preview,
-		applyButton,
-	)
-	w.SetContent(c)
+	w.SetContent(
+		fyne.NewContainerWithLayout(
+			layout.NewBorderLayout(header, applyButton, nil, nil),
+			header,
+			preview,
+			applyButton,
+		))
 
 	w.ShowAndRun()
 }
-
-/*
-@Isaac the standard lib has the ability to read and write png, jpg, and others
-decode the input image into an image.Image, then encode to the output format
-this package has support for ico
-https://godoc.org/github.com/biessek/golang-ico
-	Package ico
-	Golang .ico encoder & decoder
-https://play.golang.org/p/LQICDOh5qdq
-that examples can read images in ico, png, gif, and jpg format, and output the image as an ico
-*/
