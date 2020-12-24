@@ -45,3 +45,8 @@ on windows systems, all files will be visible, as I haven't figured out a way to
 
 ## licence
 MIT - Go wild!
+
+## credits
+error icon from [tahsintahil](https://www.iconfinder.com/tahsintahil)
+
+<div>App Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
