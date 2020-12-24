@@ -33,7 +33,7 @@ func main() {
 		//prog.Show()
 		applyIcon(iconPath.Text, driveMap[selectedDrive])
 		prog.Hide()
-		dialog.ShowInformation("", "all icon files have been written", w)
+		dialog.ShowInformation("all icons written", "remount drive to see changes", w)
 	})
 	applyButton.Disable()
 
