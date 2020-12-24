@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/container"
+	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
 )
@@ -28,7 +29,11 @@ func main() {
 	selectedDrive := "" //nil makes an error, this is bandaid solve
 
 	applyButton := widget.NewButton("apply", func() {
+		prog := dialog.NewProgressInfinite("working...", "setting icon...", w)
+		//prog.Show()
 		applyIcon(iconPath.Text, driveMap[selectedDrive])
+		prog.Hide()
+		dialog.ShowInformation("", "all icon files have been written", w)
 	})
 	applyButton.Disable()
 
