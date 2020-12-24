@@ -11,7 +11,15 @@ import (
 
 /*writes the image at the icon path in the proper formats to the drive path, along with the needed files*/
 func applyIcon(iconPath string, drivePath string) {
-	//these errors need to be caught eventually
+	//these errors all need to be caught eventually
+	//this block removes existing files by the same names
+	//writing over the files instead of removing seems to cause issues
+	os.Remove(drivePath + "/.autorun.ico")
+	os.Remove(drivePath + "/autorun.inf")
+	os.Remove(drivePath + "/.VolumeIcon.icns")
+	os.Remove(drivePath + "/._")
+	os.Remove(drivePath + "/._.VolumeIcon.icns")
+
 	//this block writes the windows icon and autorun file
 
 	icon, _ := os.Open(iconPath)
