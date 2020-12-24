@@ -6,21 +6,25 @@
 
 This tool sets drive icons that can be seen on windows and mac os, with a gui and codebase that should work on linux, windows, and mac. I have tested it with png and jpeg, but it may work with other formats.
 ## method
-After getting the target drive and image, this tool:
+<details>
+<summary>After getting the target drive and image, this tool...</summary>
+  
 - deletes the following files to prevent weird issues overwriting
   - ``.autorun.ico``
   - ``autorun.inf``
   - ``.VolumeIcon.icns``
   - ``._``
   - ``._.VolumeIcon.icns``
-- for windows icon
+- to apply windows icon it
   - writes the icon as an ico file
   - points to it with the ``autorun.inf`` file
-- for mac icon
+- to apply mac icon it
   - writes the icon as an icns file
   - writes the ``._`` and ``._.VolumeIcon.icns`` files
     - these files seem to be needed for the icon to appear - I don't know why
-    
+
+</details>
+
 ## known current limitations
 on mac os and unix systems, the autorun.inf file will be visible, as windows will not use it if it starts with a period
 
