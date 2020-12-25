@@ -41,11 +41,11 @@ func applyIcon(iconPath string, drivePath string) {
 
 	icns.Encode(icnsTarget, image)
 
-	byteSource, _ := os.Open("._")
+	byteSource, _ := os.Open("data/._")
 	byteTarget, _ := os.Create(drivePath + "/._")
 	io.Copy(byteTarget, byteSource)
 
-	volumeSource, _ := os.Open("._.VolumeIcon.icns")
+	volumeSource, _ := os.Open("data/._.VolumeIcon.icns")
 	volumeTarget, _ := os.Create(drivePath + "/._.VolumeIcon.icns")
 	io.Copy(volumeTarget, volumeSource)
 

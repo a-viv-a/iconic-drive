@@ -59,14 +59,14 @@ func main() {
 		pathWrapper,
 		driveWrapper)
 
-	preview := canvas.NewImageFromFile("error.svg")
+	preview := canvas.NewImageFromFile("data/error.svg")
 	preview.FillMode = canvas.ImageFillContain
 	preview.SetMinSize(fyne.NewSize(300, 300))
 
 	iconPath.OnChanged = func(s string) {
 		if iconPath.Validate() != nil {
 			//https://www.iconfinder.com/icons/381599/error_icon
-			s = "error.svg"
+			s = "data/error.svg"
 		}
 		preview.File = s
 		preview.Refresh()
