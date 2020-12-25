@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"image"
 	"io"
 	"os"
@@ -41,15 +42,15 @@ func applyIcon(iconPath string, drivePath string) {
 
 	icns.Encode(icnsTarget, image)
 
-	byteSource, _ := os.Open("data/._")
+	byteSource := bytes.NewReader(MustAsset("data/._"))
 	byteTarget, _ := os.Create(drivePath + "/._")
 	io.Copy(byteTarget, byteSource)
 
-	volumeSource, _ := os.Open("data/._.VolumeIcon.icns")
+	volumeSource := bytes.NewReader(MustAsset("data/._.VolumeIcon.icns"))
 	volumeTarget, _ := os.Create(drivePath + "/._.VolumeIcon.icns")
 	io.Copy(volumeTarget, volumeSource)
 
-	closeAll([]*os.File{target, autorun, icnsTarget, icon, byteTarget, byteSource, volumeTarget, volumeSource})
+	closeAll([]*os.File{target, autorun, icnsTarget, icon, byteTarget, volumeTarget})
 
 }
 
