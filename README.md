@@ -43,6 +43,8 @@ on windows systems, all files will be visible, as I haven't figured out a way to
 - [ ] add options for how to crop non square files, instead of leaving it up to the os
 - [x] catch and log errors
   - [ ] do a better job
+    - https://blog.golang.org/error-handling-and-go
+    - https://about.sourcegraph.com/go/gophercon-2019-handling-go-errors/
 
 ## building from source + contributing
 
@@ -63,6 +65,8 @@ linux: ``go build . && fyne package``
 MIT - Go wild!
 
 ## credits
+Lots of help from the Discord Gophers server, thank you all!
+
 error icon from [tahsintahil](https://www.iconfinder.com/tahsintahil)
 
 <div>App Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
