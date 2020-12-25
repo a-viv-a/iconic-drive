@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"path/filepath"
 
 	usbdrivedetector "github.com/deepakjois/gousbdrivedetector"
@@ -15,5 +16,10 @@ func drives() ([]string, map[string]string) {
 		driveMap[filepath.Base(drive)] = driveList[i]
 		driveList[i] = filepath.Base(drive)
 	}
+
+	for _, drive := range driveList {
+		log.Println(drive + " is mapped to " + driveMap[drive])
+	}
+
 	return driveList, driveMap
 }
