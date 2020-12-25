@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 
 	"fyne.io/fyne"
@@ -63,21 +62,19 @@ func main() {
 		pathWrapper,
 		driveWrapper)
 
-	previewRes := fyne.NewStaticResource("error", MustAsset("data/error.png"))
-	preview := canvas.NewImageFromResource(previewRes)
+	errRes := fyne.NewStaticResource("error", MustAsset("data/error.png"))
+	preview := canvas.NewImageFromResource(errRes)
 	preview.FillMode = canvas.ImageFillContain
 	preview.SetMinSize(fyne.NewSize(300, 300))
 
 	iconPath.OnChanged = func(s string) {
+		preview.Resource = nil
+		preview.File = ""
 		if iconPath.Validate() != nil {
 			//https://www.iconfinder.com/icons/381599/error_icon
-			preview.Resource = previewRes
+			preview.Resource = errRes
 		} else {
-			//this code is likely very bad
-			//makes program slower, and may be a memory leak?
-			previewByte, err := ioutil.ReadFile(s)
-			handleErr(err)
-			preview.Resource = fyne.NewStaticResource("image preview", previewByte)
+			preview.File = s
 		}
 		preview.Refresh()
 		setApplyStatus(applyButton, iconPath, &selectedDrive, &driveList)
