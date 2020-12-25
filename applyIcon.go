@@ -12,7 +12,7 @@ import (
 
 /*writes the image at the icon path in the proper formats to the drive path, along with the needed files*/
 func applyIcon(iconPath string, drivePath string) {
-	//these errors all need to be caught eventually
+	//these errors all need to be caught eventually -they are now kinda being caught?-
 	//this block removes existing files by the same names
 	//writing over the files instead of removing seems to cause issues
 	os.Remove(drivePath + "/.autorun.ico")
@@ -23,32 +23,42 @@ func applyIcon(iconPath string, drivePath string) {
 
 	//this block writes the windows icon and autorun file
 
-	icon, _ := os.Open(iconPath)
+	icon, err := os.Open(iconPath)
+	handleErr(err)
 
-	image, _, _ := image.Decode(icon)
+	image, _, err := image.Decode(icon)
+	handleErr(err)
 
-	target, _ := os.Create(drivePath + "/.autorun.ico")
+	target, err := os.Create(drivePath + "/.autorun.ico")
+	handleErr(err)
 
-	_ = ico.Encode(target, image) //write the autorun.ico image
+	handleErr(ico.Encode(target, image)) //write the autorun.ico image
 
-	autorun, _ := os.Create(drivePath + "/autorun.inf") //make the autorun.inf
+	autorun, err := os.Create(drivePath + "/autorun.inf") //make the autorun.inf
+	handleErr(err)
 
-	autorun.WriteString("[Autorun]\nIcon=.autorun.ico")
+	_, err = autorun.WriteString("[Autorun]\nIcon=.autorun.ico")
+	handleErr(err)
 
 	//figure out how to use fatattr to hide these files on any system
 
 	//MacOs  .VolumeIcon.icns   ._
-	icnsTarget, _ := os.Create(drivePath + "/.VolumeIcon.icns")
+	icnsTarget, err := os.Create(drivePath + "/.VolumeIcon.icns")
+	handleErr(err)
 
 	icns.Encode(icnsTarget, image)
 
 	byteSource := bytes.NewReader(MustAsset("data/._"))
-	byteTarget, _ := os.Create(drivePath + "/._")
-	io.Copy(byteTarget, byteSource)
+	byteTarget, err := os.Create(drivePath + "/._")
+	handleErr(err)
+	_, err = io.Copy(byteTarget, byteSource)
+	handleErr(err)
 
 	volumeSource := bytes.NewReader(MustAsset("data/._.VolumeIcon.icns"))
-	volumeTarget, _ := os.Create(drivePath + "/._.VolumeIcon.icns")
-	io.Copy(volumeTarget, volumeSource)
+	volumeTarget, err := os.Create(drivePath + "/._.VolumeIcon.icns")
+	handleErr(err)
+	_, err = io.Copy(volumeTarget, volumeSource)
+	handleErr(err)
 
 	closeAll([]*os.File{target, autorun, icnsTarget, icon, byteTarget, volumeTarget})
 
@@ -59,7 +69,7 @@ was closing enough files that i felt the need to make a function
 */
 func closeAll(closeList []*os.File) {
 	for _, file := range closeList {
-		file.Close()
+		handleErr(file.Close())
 	}
 }
 

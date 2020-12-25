@@ -8,7 +8,8 @@ import (
 
 //returns human readable name for each drive, then the path in a map
 func drives() ([]string, map[string]string) {
-	driveList, _ := usbdrivedetector.Detect() //shouldnt toss this error
+	driveList, err := usbdrivedetector.Detect()
+	handleErr(err)
 	driveMap := make(map[string]string)
 	for i, drive := range driveList {
 		driveMap[filepath.Base(drive)] = driveList[i]

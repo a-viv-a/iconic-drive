@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"log"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
@@ -40,7 +41,7 @@ func main() {
 	applyButton.Disable()
 
 	driveSelect := widget.NewSelect(driveList, func(s string) {
-		//println(s + " <-> " + driveMap[s])
+		log.Println(s + " selected from dropdown")
 		selectedDrive = s
 		setApplyStatus(applyButton, iconPath, &selectedDrive, &driveList)
 	})
@@ -48,6 +49,7 @@ func main() {
 	driveSelect.PlaceHolder = "select target drive"
 	refreshButton := widget.NewButton("refresh",
 		func() {
+			log.Println("refreshed drive selection")
 			driveList, driveMap = drives()
 			driveSelect.Options = driveList
 			driveSelect.Refresh()
@@ -73,7 +75,8 @@ func main() {
 		} else {
 			//this code is likely very bad
 			//makes program slower, and may be a memory leak?
-			previewByte, _ := ioutil.ReadFile(s)
+			previewByte, err := ioutil.ReadFile(s)
+			handleErr(err)
 			preview.Resource = fyne.NewStaticResource("image preview", previewByte)
 		}
 		preview.Refresh()
@@ -88,5 +91,8 @@ func main() {
 			applyButton,
 		))
 
+	log.Println("GUI shown and run")
 	w.ShowAndRun()
+	log.Println("GUI closed/crashed")
+
 }

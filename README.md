@@ -41,7 +41,8 @@ on windows systems, all files will be visible, as I haven't figured out a way to
 - [ ] set windows hidden property for all written files - read fatattr's code?
 - [ ] add option to remove backgrounds from filetypes without transparency
 - [ ] add options for how to crop non square files, instead of leaving it up to the os
-- [ ] catch and log errors
+- [x] catch and log errors
+  - [ ] do a better job
 
 ## building from source + contributing
 

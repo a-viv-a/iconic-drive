@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"io/ioutil"
+	"log"
 
 	"fyne.io/fyne/widget"
 	"github.com/h2non/filetype"
@@ -20,18 +21,22 @@ func setApplyStatus(
 		for _, element := range *driveList { //test that device is still mounted
 			if element == *selectedDrive {
 				(*applyButton).Enable()
+				log.Println("apply button was enabled")
 				return
 			}
 		}
 	}
 	(*applyButton).Disable()
+	log.Println("apply button was disabled")
 }
 
 /* returns nil if the path points to a file that is an image
 intended for use in the validator of a fyne entry*/
 func testImgPath(path string) error {
-	buf, _ := ioutil.ReadFile(path) //remember to actually test error
+	buf, err := ioutil.ReadFile(path) //remember to actually test error
+	handleErr(err)
 	if filetype.IsImage(buf) {
+		log.Println("Valid image tested")
 		return nil
 	}
 	return errors.New("bad") //this is so bad it hurts but ill fix it later
