@@ -37,6 +37,7 @@ on windows systems, all files will be visible, as I haven't figured out a way to
 
 ## goals
 
+- [ ] show drive names on windows via win32 api and build flags
 - [ ] bring code up to golang standerds
 - [ ] set windows hidden property for all written files - read fatattr's code?
 - [ ] add option to remove backgrounds from filetypes without transparency

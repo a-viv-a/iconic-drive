@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"runtime"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
@@ -13,6 +14,7 @@ import (
 )
 
 func main() {
+	log.Printf("GOARCH:%s GOOS:%s\n", runtime.GOARCH, runtime.GOOS)
 	a := app.New()
 	w := a.NewWindow("iconic drive")
 	//w.SetFixedSize(true)
