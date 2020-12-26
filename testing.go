@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
+	"time"
 
 	"fyne.io/fyne/widget"
 	"github.com/h2non/filetype"
@@ -40,4 +41,9 @@ func testImgPath(path string) error {
 		return nil
 	}
 	return errors.New("bad") //this is so bad it hurts but ill fix it later
+}
+
+func elapsed(timed string) func() {
+	start := time.Now()
+	return func() { log.Printf("%s took %v\n", timed, time.Since(start)) }
 }

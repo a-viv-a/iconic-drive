@@ -49,7 +49,7 @@ on windows systems, all files will be visible, as I haven't figured out a way to
 
 ## building from source + contributing
 
-if your building on your target os, ``go build .`` and ``fyne package`` will suffice. If you are building for a different os, ``fyne-cross <target os>`` is what you should do. This will require docker, and a rather large initial download. When building for windows, use the flag ``-ldflags -H=windowsgui`` to prevent the terminal window from flashing on screen. Finally, if you add or change files in the data folder, you will need to run ``go-bindata data/...`` to update the ``bindata.go`` file, as the contents of the data folder will not be built into the final executable. Thanks for taking the time to contribute/build from source/read this far!
+if your building on your target os, ``go build .`` and ``fyne package`` will suffice. If you are building for a different os, ``fyne-cross <target os>`` is what you should do. This will require docker, and a rather large initial download. Finally, if you add or change files in the data folder, you will need to run ``go-bindata data/...`` to update the ``bindata.go`` file, as the contents of the data folder will not be built into the final executable. Thanks for taking the time to contribute/build from source/read this far!
 
 <details>
 <summary>specific build commands</summary>
