@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/layout"
+	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
 
@@ -23,7 +24,7 @@ func main() {
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
 	iconPath.Validator = testImgPath
-	clearButton := widget.NewButton("clear", func() { iconPath.SetText("") })
+	clearButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() { iconPath.SetText("") })
 	pathWrapper := fyne.NewContainerWithLayout(
 		layout.NewBorderLayout(nil, nil, nil, clearButton),
 		container.NewHScroll(iconPath), clearButton,
@@ -48,7 +49,8 @@ func main() {
 	})
 
 	driveSelect.PlaceHolder = "select target drive"
-	refreshButton := widget.NewButton("refresh",
+	refreshButton := widget.NewButtonWithIcon("",
+		theme.ViewRefreshIcon(),
 		func() {
 			log.Println("refreshed drive selection")
 			driveList, driveMap = drives()
@@ -64,7 +66,7 @@ func main() {
 		pathWrapper,
 		driveWrapper)
 
-	errRes := fyne.NewStaticResource("error", MustAsset("data/error.png"))
+	errRes := theme.QuestionIcon() //fyne.NewStaticResource("error", MustAsset("data/error.png"))
 	preview := canvas.NewImageFromResource(errRes)
 	preview.FillMode = canvas.ImageFillContain
 	preview.SetMinSize(fyne.NewSize(300, 300))

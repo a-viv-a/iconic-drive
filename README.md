@@ -68,6 +68,4 @@ MIT - Go wild!
 ## credits
 Lots of help from the Discord Gophers server, thank you all!
 
-error icon from [tahsintahil](https://www.iconfinder.com/tahsintahil)
-
 <div>App Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
