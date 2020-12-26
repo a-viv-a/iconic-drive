@@ -22,7 +22,9 @@ func applyIcon(iconPath string, drivePath string) {
 	removals := []string{"/.autorun.ico", "/autorun.inf", "/.VolumeIcon.icns", "/._", "/._.VolumeIcon.icns"}
 	for _, file := range removals {
 		wg.Add(1)
-		asyncRemove(file, &wg)
+		if err := asyncRemove(drivePath+file, &wg); !(err == nil || os.IsNotExist(err)) {
+			handleErr(err)
+		}
 	}
 	wg.Wait()
 
@@ -102,7 +104,7 @@ func closeAll(closeList []*os.File) {
 	}
 }
 
-func asyncRemove(path string, wg *sync.WaitGroup) {
+func asyncRemove(path string, wg *sync.WaitGroup) error {
 	defer wg.Done()
-	handleErr(os.Remove(path))
+	return os.Remove(path)
 }

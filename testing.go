@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	"fyne.io/fyne/widget"
@@ -35,7 +36,9 @@ func setApplyStatus(
 intended for use in the validator of a fyne entry*/
 func testImgPath(path string) error {
 	buf, err := ioutil.ReadFile(path) //remember to actually test error
-	handleErr(err)
+	if os.IsNotExist(err) {
+		handleErr(err)
+	}
 	if filetype.IsImage(buf) {
 		log.Println("Valid image tested")
 		return nil
