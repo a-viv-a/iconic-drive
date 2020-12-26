@@ -36,7 +36,7 @@ func setApplyStatus(
 intended for use in the validator of a fyne entry*/
 func testImgPath(path string) error {
 	buf, err := ioutil.ReadFile(path) //remember to actually test error
-	if os.IsNotExist(err) {
+	if !os.IsNotExist(err) {
 		handleErr(err)
 	}
 	if filetype.IsImage(buf) {
