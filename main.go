@@ -35,7 +35,6 @@ func main() {
 
 	applyButton := widget.NewButton("apply", func() {
 		prog := dialog.NewProgressInfinite("working...", "setting icon...", w)
-		//prog.Show()
 		applyIcon(iconPath.Text, driveMap[selectedDrive])
 		prog.Hide()
 		dialog.ShowInformation("all icons written", "remount drive to see changes", w)
@@ -66,7 +65,7 @@ func main() {
 		pathWrapper,
 		driveWrapper)
 
-	errRes := theme.QuestionIcon() //fyne.NewStaticResource("error", MustAsset("data/error.png"))
+	errRes := theme.QuestionIcon()
 	preview := canvas.NewImageFromResource(errRes)
 	preview.FillMode = canvas.ImageFillContain
 	preview.SetMinSize(fyne.NewSize(300, 300))
@@ -75,7 +74,6 @@ func main() {
 		preview.Resource = nil
 		preview.File = ""
 		if iconPath.Validate() != nil {
-			//https://www.iconfinder.com/icons/381599/error_icon
 			preview.Resource = errRes
 		} else {
 			preview.File = s

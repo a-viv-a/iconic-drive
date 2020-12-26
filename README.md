@@ -54,7 +54,7 @@ if your building on your target os, ``go build .`` and ``fyne package`` will suf
 <details>
 <summary>specific build commands</summary>
 
-windows: ``fyne-cross windows -ldflags -H=windowsgui``
+windows: ``fyne-cross windows``
 
 mac os: ``fyne-cross darwin``
 
