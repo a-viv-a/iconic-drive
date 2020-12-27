@@ -34,8 +34,8 @@ func main() {
 	selectedDrive := "" //nil makes an error, this is bandaid solve
 
 	applyButton := widget.NewButton("apply", func() {
-		prog := dialog.NewProgressInfinite("working...", "setting icon...", w)
-		applyIcon(iconPath.Text, driveMap[selectedDrive])
+		prog := dialog.NewProgress("working...", "setting icon...", w)
+		applyIcon(iconPath.Text, driveMap[selectedDrive], prog)
 		prog.Hide()
 		dialog.ShowInformation("all icons written", "remount drive to see changes", w)
 	})

@@ -7,18 +7,21 @@ import (
 	"os"
 	"sync"
 
+	"fyne.io/fyne/dialog"
 	ico "github.com/biessek/golang-ico"
 	"github.com/jackmordaunt/icns"
 )
 
 /*writes the image at the icon path in the proper formats to the drive path, along with the needed files*/
-func applyIcon(iconPath string, drivePath string) {
+func applyIcon(iconPath string, drivePath string, prog *dialog.ProgressDialog) {
 	//times the icon writing process
 	defer elapsed("icon writing")()
 	/*these errors need to be delt with eventually
 	this block removes existing files by the same names
 	it should be concurrent now*/
-	var wg sync.WaitGroup
+	var wg WaitGroupBar
+	wg.bar = prog
+	wg.max = 10
 	removals := []string{"/.autorun.ico", "/autorun.inf", "/.VolumeIcon.icns", "/._", "/._.VolumeIcon.icns"}
 	for _, file := range removals {
 		wg.Add(1)
@@ -104,7 +107,40 @@ func closeAll(closeList []*os.File) {
 	}
 }
 
-func asyncRemove(path string, wg *sync.WaitGroup) error {
+func asyncRemove(path string, wg *WaitGroupBar) error {
 	defer wg.Done()
 	return os.Remove(path)
+}
+
+//WaitGroupBar wraps waitgroup for changing loading bars
+type WaitGroupBar struct {
+	wg      sync.WaitGroup
+	bar     *dialog.ProgressDialog
+	current int
+	max     int
+}
+
+//Done wraps waitgroup done but increases progress on loading bar
+func (wg *WaitGroupBar) Done() {
+	wg.current++
+	wg.wg.Done()
+	wg.UpdateBar()
+}
+
+//Add wraps waitgroup done but increases the max of the loading bar
+func (wg *WaitGroupBar) Add(i int) {
+	// wg.max += i
+	// log.Printf("max value is %d\n", wg.max)
+	wg.wg.Add(i)
+	wg.UpdateBar()
+}
+
+//Wait wraps waitgroup wait, with no changes
+func (wg *WaitGroupBar) Wait() {
+	wg.wg.Wait()
+}
+
+//UpdateBar updates the bar (prolly didnt need a comment)
+func (wg *WaitGroupBar) UpdateBar() {
+	wg.bar.SetValue(float64(wg.current) / float64(wg.max))
 }
