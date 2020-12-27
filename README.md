@@ -31,9 +31,8 @@ on mac os and unix systems, the autorun.inf file will be visible, as windows wil
 on windows systems, all files will be visible, as I haven't figured out a way to set the windows hidden property on non windows systems
 
 ## screenshots
-![select target drive](https://user-images.githubusercontent.com/72410860/103106849-d9e28980-45ed-11eb-8f95-e32acee54af9.png)
-![loading bar](https://user-images.githubusercontent.com/72410860/103106897-39409980-45ee-11eb-973e-d2da282ec0a8.png)
-![finished screen](https://user-images.githubusercontent.com/72410860/103106872-0b5b5500-45ee-11eb-868b-b978a33935f0.png)
+![select target drive](https://user-images.githubusercontent.com/72410860/103165055-ca1e9d00-47c7-11eb-88db-c618066cef61.png)
+![loading bar](https://user-images.githubusercontent.com/72410860/103165062-f6d2b480-47c7-11eb-9eb8-84cf1b3597a2.png)
 
 ## goals
 
