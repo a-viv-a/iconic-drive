@@ -18,13 +18,35 @@ func main() {
 	log.Printf("GOARCH:%s GOOS:%s\n", runtime.GOARCH, runtime.GOOS)
 	a := app.New()
 	w := a.NewWindow("iconic drive")
+	w.SetMaster()
 	//w.SetFixedSize(true)
 	//w.Resize(fyne.NewSize(300, 500))
 
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
 	iconPath.Validator = testImgPath
-	fileButton := widget.NewButtonWithIcon("", theme.FolderIcon(), nil)
+	fileButton := widget.NewButtonWithIcon("", theme.FolderIcon(), func() {
+		fb := fyne.CurrentApp().NewWindow("file browser")
+		fb.Show()
+		fb.Resize(fyne.NewSize(500, 500))
+
+		dia := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
+			defer fb.Close()
+			if err == nil && reader == nil {
+				return
+			}
+			if err != nil {
+				dialog.ShowError(err, w)
+				return
+			}
+			iconPath.SetText(reader.URI().String())
+			reader.Close()
+		}, fb)
+		//dia.SetFilter(storage.NewExtensionFileFilter([]string{".png", ".jpeg"}))
+
+		dia.Show()
+		dia.Resize(fyne.NewSize(500, 500))
+	})
 	clearButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() { iconPath.SetText("") })
 	buttonWrapper := container.NewHBox(fileButton, clearButton)
 	pathWrapper := fyne.NewContainerWithLayout(
