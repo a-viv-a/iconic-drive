@@ -24,10 +24,12 @@ func main() {
 	iconPath := widget.NewEntry()
 	iconPath.SetPlaceHolder("paste or type image path")
 	iconPath.Validator = testImgPath
+	fileButton := widget.NewButtonWithIcon("", theme.FolderIcon(), nil)
 	clearButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() { iconPath.SetText("") })
+	buttonWrapper := container.NewHBox(fileButton, clearButton)
 	pathWrapper := fyne.NewContainerWithLayout(
-		layout.NewBorderLayout(nil, nil, nil, clearButton),
-		container.NewHScroll(iconPath), clearButton,
+		layout.NewBorderLayout(nil, nil, nil, buttonWrapper),
+		container.NewHScroll(iconPath), buttonWrapper,
 	)
 
 	driveList, driveMap := drives()
