@@ -21,7 +21,7 @@ func applyIcon(iconPath string, drivePath string, prog *dialog.ProgressDialog) {
 	it should be concurrent now*/
 	var wg WaitGroupBar
 	wg.bar = prog
-	wg.max = 10
+	wg.max = 15
 	removals := []string{"/.autorun.ico", "/autorun.inf", "/.VolumeIcon.icns", "/._", "/._.VolumeIcon.icns"}
 	for _, file := range removals {
 		wg.Add(1)
@@ -92,6 +92,13 @@ func applyIcon(iconPath string, drivePath string, prog *dialog.ProgressDialog) {
 		handleErr(err)
 		handleErr(volumeTarget.Close())
 	}()
+
+	wg.Wait()
+
+	for _, file := range removals {
+		wg.Add(1)
+		hideFile(drivePath+file, &wg)
+	}
 
 	wg.Wait()
 
