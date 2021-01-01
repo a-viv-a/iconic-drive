@@ -12,10 +12,10 @@ import (
 const ATTR_HIDDEN int = 2
 
 //FAT_IOCTL_GET_ATTRIBUTES is read mode
-const FAT_IOCTL_GET_ATTRIBUTES uint = 0x80047210
+const FAT_IOCTL_GET_ATTRIBUTES uint = 2147774992
 
 //FAT_IOCTL_SET_ATTRIBUTES is write mode
-const FAT_IOCTL_SET_ATTRIBUTES uint = 0x80047211
+const FAT_IOCTL_SET_ATTRIBUTES uint = 1074033169
 
 func hideFile(fileStr string, wg *WaitGroupBar) {
 	defer wg.Done()
