@@ -11,5 +11,5 @@ require (
 	github.com/jackmordaunt/icns v1.0.0
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
 	github.com/winlabs/gowin32 v0.0.0-20201021184923-54ddf04f16e6
-	golang.org/x/sys v0.0.0-20200720211630-cb9d2d5c5666
+	golang.org/x/sys v0.0.0-20200824131458-2bddbd2f0c6c
 )
